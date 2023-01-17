@@ -1,0 +1,334 @@
+import math
+
+DISCORD_TOKEN = "MTAwMTIzMjE2NzA3MTkxMTk5Nw.G7m85X.wzoIY2aGmlQZefpzfgW2mCTtkbYvsjtFu4NncY"
+
+import discord
+from discord import embeds
+from discord import *
+from discord.ext import commands
+import os
+import requests
+import time
+import random
+from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+
+driver = webdriver.Chrome()
+driver.get('https://rest-bf.blox.land/games/crash')
+
+prefix = ","
+client = commands.Bot(command_prefix=prefix)
+client.remove_command('predict')
+
+
+@client.event
+async def on_ready():
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=",help | BLOXAPI"))
+    os.system("cls")
+    guild_count = 0
+
+    os.system("cls")
+    for guild in client.guilds:
+        print(f"Bot in: {guild.name}\nServer Id: {guild.id}")
+        guild_count = guild_count + 1
+@client.command()
+async def predict(ctx):
+    role = discord.utils.get(ctx.guild.roles, id=996067125087191100)
+    role2 = discord.utils.get(ctx.guild.roles, id=1001921353714253926)
+    if role in ctx.author.roles:
+        eligable=discord.Embed(title="Sucess", description=f"```check your direct messages```", color=0x00FF00)
+        eligable.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=eligable)
+        time.sleep(0.1)
+        dmm = discord.Embed(title="Please wait", description=f"Please be patient while we are grabbing bloxflip api", color=0xedd9c3)
+        dmm.add_field(name="Info", value="```This might take a few seconds```", inline=False)
+        dmm.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.author.send(embed=dmm)
+        time.sleep(0.1)
+        driver.get('https://rest-bf.blox.land/games/crash')
+        driver.refresh()
+        games = driver.execute_script("""return fetch('https://rest-bf.blox.land/games/crash').then(res => res.json());""")
+        privateHash = games["current"]["privateHash"]
+        publicSeed = games["current"]["publicSeed"]
+        Beforeprevious2 = games["history"][2]["crashPoint"]
+        BeforepreviousGame = games["history"][1]["crashPoint"]
+        previousGame = games["history"][0]["crashPoint"]
+        gameId = games["current"]["_id"]
+        av5 = (games["history"][0]["crashPoint"] + games["history"][1]["crashPoint"] + games["history"][2]["crashPoint"] + games["history"][3]["crashPoint"] + games["history"][4]["crashPoint"])
+        av3 = (games["history"][0]["crashPoint"] + games["history"][1]["crashPoint"] + games["history"][2]["crashPoint"])
+        av3div = (games["history"][0]["crashPoint"] + games["history"][1]["crashPoint"] + games["history"][2]["crashPoint"]) / 3
+        chance = 97/previousGame
+        estimate = (1 / (1.05 - chance) + av3) / 2.15
+
+
+        if estimate >= 10:
+            estimate -= random.randint(1, 3)
+        else:
+            print('')
+
+        if 4<=estimate <= 6:
+            accuracy = "Mediocre Accuracy"
+        elif 1<= estimate <=4:
+            accuracy = "Mediocre/Good accuracy"
+        elif 6<= estimate <= 10:
+            accuracy = "Fairly bad Accuracy"
+        else:
+            accuracy = "Bad accuracy"
+
+
+        Streak = "No streak yet"
+        if av5 / 3 > 3.5:
+            Streak = "Great Crash Streak"
+        else:
+            Streak = "Flat Crash Streak"
+
+        event = discord.Embed(title="BLOXAPI - prediction", description=f"{ctx.author.mention}", color=0xedd9c3)
+        event.add_field(name="Game id", value=f"```{gameId}```\n", inline=False)
+        event.add_field(name="Private hash/Public seed", value=f"```Private hash\n{privateHash}\n\nPublic seed\n{publicSeed}```", inline=False)
+        event.add_field(name="Previous 3 crashpoints", value=f"```{Beforeprevious2} x, {BeforepreviousGame} x, {previousGame} x```\n", inline=False)
+        event.add_field(name="5 game average", value=f"```{av5 / 3} x```\n\n", inline=False)
+        event.add_field(name="Estimate (test phase)", value=f"```{estimate} x```", inline=False)
+        event.add_field(name="Accuracy by (Estimate generated)", value=f"```{accuracy}```", inline=False)
+        event.add_field(name="Cashout at (preferably) ", value=f"```Under 4x Unless you are feeling lucky```", inline=False)
+        event.add_field(name="info ", value=f"```high = risky Please check 'previous 3 crashpoints'```",inline=False)
+        event.add_field(name="Streak", value=f"```{Streak}```", inline=False)
+
+        event.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        print(f"Used by {ctx.author}")
+        if av3 >= 25:
+            event.add_field(name="Wait.. ???", value=f"```This prediction might be off```",inline=False)
+        elif av3div <= 1.80:
+            event.add_field(name="Wait.. ???", value=f"```This prediction might be off```",inline=False)
+        await ctx.author.send(embed=event)
+    elif role2 in ctx.author.roles:
+        transactionfailed = discord.Embed(title="Error", description=f"You cant use this command", color=0xE00000)
+        transactionfailed.add_field(name="Your transaction has failed", value="```INFO\nYour transaction might have been fraud\n\nYou Might have not payed yet\n\nPLEASE APPEAL DM Matheww#0420```", inline=False)
+        transactionfailed.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=transactionfailed)
+    else:
+        noteligable=discord.Embed(title="Error", description=f"You cant use this command", color=0xE00000)
+        noteligable.add_field(name="Buy predictor at", value="Buy here: <#996063375987589120>", inline=False)
+        noteligable.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=noteligable)
+
+
+
+
+@client.command()
+async def gayness(ctx, user: str):
+    math = random.randint(1,99999)
+    math2 = random.randint(1,99)
+    if user == "<@756534114143961088>":
+        gayness=discord.Embed(title="Gayness calculator", description="Calculating gayness", color=0xE00000)
+        gayness.add_field(name="Calculating gayness level", value=f"Loaded gayness {user}", inline=False)
+        gayness.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        gayness.add_field(name="Gayness", value=f"{user} ```is 0% gay```", inline=False)
+        await ctx.message.reply(embed=gayness)
+    elif user == "<@921007797917876294>":
+        gayness=discord.Embed(title="Gayness calculator", description="Calculating gayness", color=0xE00000)
+        gayness.add_field(name="Calculating gayness level", value=f"Loaded gayness {user}", inline=False)
+        gayness.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        gayness.add_field(name="Gayness", value=f"{user} ```is 100% gay```", inline=False)
+        await ctx.message.reply(embed=gayness)
+    elif user == "<@778968311953358848>":
+        gayness=discord.Embed(title="Gayness calculator", description="Calculating gayness", color=0xE00000)
+        gayness.add_field(name="Calculating gayness level", value=f"Loaded gayness {user}", inline=False)
+        gayness.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        gayness.add_field(name="Gayness", value=f"{user} ```is 0% gay```", inline=False)
+        await ctx.message.reply(embed=gayness)
+    elif user == "<@906569919804612719>":
+        gayness=discord.Embed(title="Gayness calculator", description="Calculating gayness", color=0xE00000)
+        gayness.add_field(name="Calculating gayness level", value=f"Loaded gayness {user}", inline=False)
+        gayness.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        gayness.add_field(name="Gayness", value=f"{user} ```is 100% NOT gay```", inline=False)
+        await ctx.message.reply(embed=gayness)
+    else:
+        print(user)
+        gayness=discord.Embed(title="Gayness calculator", description="Calculating gayness", color=0xE00000)
+        gayness.add_field(name="Calculating gayness level", value=f"Loaded gayness {user}", inline=False)
+        gayness.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        gayness.add_field(name="Gayness", value=f"{user} ```is {math2}.{math}% gay```", inline=False)
+        await ctx.message.reply(embed=gayness)
+
+
+@client.command()
+async def redeem(ctx, redeem: str):
+    author = ctx.author
+    with open("Redeemed.txt") as file:
+        files = file.read()
+    check = requests.get("https://pastebin.com/raw/Yh5XLujj").text
+    if redeem in files.splitlines():
+        redeemembed=discord.Embed(title="Redeem", description=f"@{author}\n **Tried to redeem [ {redeem} ]**", color=0xDDE000)
+        redeemembed.add_field(name="Redeem", value=f"**{author} tried to use code {redeem}**", inline=False)
+        redeemembed.add_field(name="Code", value="```This code was already used!```", inline=False)
+        redeemembed.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=redeemembed)
+    elif redeem in check.splitlines():
+        redeemembed=discord.Embed(title="Redeem", description=f"@{author}\n **Redeemed [ {redeem} ]**", color=0x00E000)
+        redeemembed.add_field(name="Redeem", value=f"**{author} used code {redeem}**", inline=False)
+        redeemembed.add_field(name="Code", value="```Thanks for using this code! you have now been ranked```", inline=False)
+        redeemembed.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=redeemembed)
+        role = discord.utils.get(ctx.guild.roles, name="Buyers")
+        member = ctx.author
+        await member.add_roles(role)
+        with open('Redeemed.txt', 'w') as f:
+            f.write(f"{files}\n{redeem}\n")
+        with open("giftkey.txt") as filer:
+            giftkey = filer.read()
+            key = giftkey
+        time.sleep(5)
+
+    else:
+        redeemembed=discord.Embed(title="Redeem", description=f"@{author}\n **Tried to redeem [ {redeem} ]**", color=0xE00000)
+        redeemembed.add_field(name="Redeem", value=f"**{author} tried to use code {redeem}**", inline=False)
+        redeemembed.add_field(name="Code", value="```This code does not exist!```", inline=False)
+        redeemembed.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=redeemembed)
+
+
+
+@client.command()
+async def join(ctx):
+    author = ctx.author
+    ctx.channel
+    join=discord.Embed(title="Sucessfully joined event", description=f"@{author}\n **Joined the event**", color=0x00E000)
+    join.add_field(name="Sucess", value="```Check your direct messages```", inline=False)
+    join.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+    await ctx.channel.send(embed=join)
+    time.sleep(0.5)
+    event=discord.Embed(title="Joined event", description=f"you joined", color=0x00E000)
+    event.add_field(name="What to do", value=f"You type A!guess Number (between 1, 1000)", inline=False)
+    event.add_field(name="Example", value="```A!guess 123```", inline=False)
+    event.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+    await ctx.author.send(embed=event)
+
+@client.command()
+async def guess(ctx, guess: int):
+    math = random.randint(1,1000)
+    print(f"number gen = {math}")
+    author = ctx.author
+    if guess == math:
+        guessem=discord.Embed(title="Correct Number", description="the number u have guessed was correct", color=0x00E000)
+        guessem.add_field(name="Number was", value=f"```{math} You guessed {guess} Notifying admins```", inline=False)
+        guessem.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.author.send(embed=guessem)
+        time.sleep(1)
+        end=discord.Embed(title=f"Correct Number was guessed by {author}", description="the number was guessed correctly", color=0x00E000)
+        end.add_field(name="Number was", value=f"```number was {math} You guessed {guess} Please screenshot this message```", inline=False)
+        end.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await channel.send(embed=end)
+    else:
+        guessem=discord.Embed(title="False number", description="the number u have guessed was not correct", color=0x00E000)
+        guessem.add_field(name="Number was", value=f"```{math}```", inline=False)
+        guessem.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.author.send(embed=guessem)
+@client.command()
+async def shutdown(ctx):
+    role = discord.utils.get(ctx.guild.roles, id=996062253159825508)
+    if role in ctx.author.roles:
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="Shutting offline | BLOXAPI"))
+        shutdwn = discord.Embed(title="Shutting down bot", description="The bot will display inactive after a few minutes",color=0x00E000)
+        shutdwn.add_field(name="No output will be sent!", value=f"```Executed by: {ctx.author}```", inline=False)
+        shutdwn.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.channel.send(embed=shutdwn)
+        exit()
+    else:
+        noteligable=discord.Embed(title="Error", description=f"You cant use this command", color=0xE00000)
+        noteligable.add_field(name=f"Retard @{ctx.author} trying to shutdown bot", value=f"Retarded ass looking mf {ctx.author.mention} **CRINGE** <:face_vomiting:1001538505790455868>", inline=False)
+        noteligable.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=noteligable)
+
+@client.command()
+async def sussy(ctx):
+    math = random.randint(1,10)
+    if math == 1 or math == 2:
+        thigh = discord.Embed(title="thigh generated", description=f"check the image below", color=0xE00000)
+        thigh.set_image(url="https://cdn.discordapp.com/attachments/1001982840558325901/1001987025660022897/unknown.png")
+        thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=thigh)
+    elif math == 3 or math == 4:
+        thigh = discord.Embed(title="thigh generated rotate 90 degrees to the left", description=f"check the image below", color=0xE00000)
+        thigh.set_image(url="https://cdn.discordapp.com/attachments/1001982840558325901/1001987562757439548/unknown.png")
+        thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=thigh)
+    elif math == 5 or math == 6:
+        thigh = discord.Embed(title="ass generated", description=f"check the image below>", color=0xE00000)
+        thigh.set_image(url="https://cdn.discordapp.com/attachments/817478275332046890/1002002277940347012/unknown.png")
+        thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=thigh)
+    elif math == 7 or math == 8:
+        thigh = discord.Embed(title="Combo generated", description=f"check the image below", color=0xE00000)
+        thigh.set_image(url="https://cdn.discordapp.com/attachments/1001982840558325901/1002004507019968542/unknown.png")
+        thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=thigh)
+    elif math == 9 or math == 10:
+        thigh = discord.Embed(title="Giffed Combo generated", description=f"check the image below", color=0xE00000)
+        thigh.set_image(url="https://cdn.discordapp.com/icons/997418663139364894/a_75fe03980ea9f282f1dd4dec9c524fce.gif?size=4096")
+        thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=thigh)
+
+@client.command()
+async def choosesussy(ctx, text: str):
+    role = discord.utils.get(ctx.guild.roles, id=996062253159825508)
+    if role in ctx.author.roles:
+        if text == "1":
+            thigh = discord.Embed(title="thigh generated", description=f"check the image below", color=0xE00000)
+            thigh.set_image(url="https://cdn.discordapp.com/attachments/1001982840558325901/1001987025660022897/unknown.png")
+            thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+            await ctx.message.reply(embed=thigh)
+        elif text == "2":
+            thigh = discord.Embed(title="thigh generated rotate 90 degrees to the left", description=f"check the image below", color=0xE00000)
+            thigh.set_image(url="https://cdn.discordapp.com/attachments/1001982840558325901/1001987562757439548/unknown.png")
+            thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+            await ctx.message.reply(embed=thigh)
+        elif text == "3":
+            thigh = discord.Embed(title="ass generated", description=f"check the image below>", color=0xE00000)
+            thigh.set_image(url="https://cdn.discordapp.com/attachments/817478275332046890/1002002277940347012/unknown.png")
+            thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+            await ctx.message.reply(embed=thigh)
+        elif text == "4":
+            thigh = discord.Embed(title="Combo generated", description=f"check the image below", color=0xE00000)
+            thigh.set_image(url="https://cdn.discordapp.com/attachments/1001982840558325901/1002004507019968542/unknown.png")
+            thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+            await ctx.message.reply(embed=thigh)
+        elif text == "5":
+            thigh = discord.Embed(title="Giffed Combo generated", description=f"check the image below", color=0xE00000)
+            thigh.set_image(url="https://cdn.discordapp.com/icons/997418663139364894/a_75fe03980ea9f282f1dd4dec9c524fce.gif?size=4096")
+            thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+            await ctx.message.reply(embed=thigh)
+        elif text == "list":
+            thigh = discord.Embed(title="Sussy list", description=f"check the list below", color=0xE00000)
+            thigh.add_field(name=f"List",value=f"```1 = standing\n2 = 90 degrees\n3 = ass\n4 = combo\n5 = giffed```",inline=False)
+
+            thigh.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+            await ctx.message.reply(embed=thigh)
+    else:
+        noteligable = discord.Embed(title="Error", description=f"You cant use this command", color=0xE00000)
+        noteligable.add_field(name=f"Retard @{ctx.author} trying to Choose",value=f"Retarded ass looking mf {ctx.author.mention} **CRINGE** <:face_vomiting:1001538505790455868>",inline=False)
+        noteligable.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=noteligable)
+
+
+@client.command()
+async def leaveserver(ctx, text: str):
+    role = discord.utils.get(ctx.guild.roles, id=996062253159825508)
+    if role in ctx.author.roles:
+        await client.get_guild(int(text)).leave()
+        print(f"left server {textv}")
+    else:
+        noteligable = discord.Embed(title="Error", description=f"You cant use this command", color=0xE00000)
+        noteligable.add_field(name=f"Retard @{ctx.author} trying to leave a server",value=f"Retarded ass looking mf {ctx.author.mention} **CRINGE** <:face_vomiting:1001538505790455868>",inline=False)
+        noteligable.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=noteligable)
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        falseembed=discord.Embed(title="Error", description=f"**Sytax error found please use command .predict**", color=0xE00000)
+        falseembed.add_field(name="Command", value="```This command does not exist!```", inline=False)
+        falseembed.set_footer(text="Made by Matheww#0420 | Support = https://paypal.me/matheww420")
+        await ctx.message.reply(embed=falseembed)
+
+
+client.run(DISCORD_TOKEN)	
